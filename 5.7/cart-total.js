@@ -4,7 +4,7 @@ function calculate(sumBasket, countProducts, promoCode = null) {
         if (sumBasket > 300)
             totalSum -= 300
         else
-            return 0;
+            return 0
     }
     if (countProducts >= 10)
         totalSum *= 0.95
@@ -12,7 +12,7 @@ function calculate(sumBasket, countProducts, promoCode = null) {
         totalSum += -((totalSum - 50000) * 0.8)
     if (promoCode === 'СКИДКА15' && totalSum >= 20000)
         totalSum *= 0.75
-    return totalSum;
+    return totalSum
 }
 
 export default {calculate}
