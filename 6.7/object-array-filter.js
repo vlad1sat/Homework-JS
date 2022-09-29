@@ -1,9 +1,8 @@
 function filter(objects, property, valueProperty) {
     let filteredObject = []
     for (let object of objects) {
-        if (object.hasOwnProperty(property)) {
-            if (object[property] === valueProperty)
-                filteredObject.push(object)
+        if (object.hasOwnProperty(property) && object[property] === valueProperty) {
+            filteredObject.push(object)
         }
     }
     if (filteredObject.length === 0)
