@@ -1,8 +1,8 @@
 (function () {
     function createAppTitle(title) {
-       let appTitle = document.createElement('h2');
-       appTitle.innerText = title;
-       return appTitle;
+        let appTitle = document.createElement('h2');
+        appTitle.innerText = title;
+        return appTitle;
     }
 
     function createTodoItemForm() {
@@ -11,6 +11,7 @@
         let input = document.createElement('input');
         let buttonWrapper = document.createElement('div');
 
+        button.disabled = true;
         form.classList.add('input-group', 'mb-3');
         input.classList.add('form-control');
         input.placeholder = "Введите название нашего дела";
@@ -22,6 +23,10 @@
         form.append(input);
         form.append(buttonWrapper);
 
+        input.addEventListener('input', function(e) {
+            e.preventDefault();
+            button.disabled = input.value.length === 0;
+        })
         return {
             form,
             input,
@@ -62,14 +67,17 @@
         };
     }
 
-    function createTodoApp(container, title = "Список дел") {
+    function createTodoApp(container, title = "Список дел", arraysTasks) {
         let todoAppTitle = createAppTitle(title);
         let todoItemForm = createTodoItemForm();
         let todoList = createTodoList();
-
         container.append(todoAppTitle);
         container.append(todoItemForm.form);
         container.append(todoList);
+
+        for (let task of arraysTasks) {
+            todoList.append(createTodoItem(task.name).item);
+        }
         todoItemForm.form.addEventListener('submit', function (e) {
             e.preventDefault();
             let itemForm = todoItemForm.input.value;
@@ -92,11 +100,11 @@
         })
     }
 
-   /* document.addEventListener('DOMContentLoaded', function () {
-        createTodoApp(document.getElementById('my-todos'), "Мои дела");
-        createTodoApp(document.getElementById('mom-todos'), "Дела мамы");
-        createTodoApp(document.getElementById('dad-todos'), "Дела папы")
-    })*/
+    /* document.addEventListener('DOMContentLoaded', function () {
+         createTodoApp(document.getElementById('my-todos'), "Мои дела");
+         createTodoApp(document.getElementById('mom-todos'), "Дела мамы");
+         createTodoApp(document.getElementById('dad-todos'), "Дела папы")
+     })*/
 
     window.createTodoApp = createTodoApp;
 })();
