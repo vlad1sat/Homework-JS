@@ -76,8 +76,17 @@
         container.append(todoList);
 
         for (let task of arraysTasks) {
-            todoList.append(createTodoItem(task.name).item);
+            let elementTodo = createTodoItem(task.name);
+
+            if (task.done)
+                elementTodo.item.classList.toggle('list-group-item-success');
+
+            clickDoneButton(elementTodo);
+            clickDeleteButton(elementTodo);
+
+            todoList.append(elementTodo.item);
         }
+
         todoItemForm.form.addEventListener('submit', function (e) {
             e.preventDefault();
             let itemForm = todoItemForm.input.value;
@@ -85,26 +94,27 @@
                 return;
 
             let todoItem = createTodoItem(itemForm);
-            todoItem.doneButton.addEventListener('click', function () {
-                todoItem.item.classList.toggle('list-group-item-success');
-            });
-
-            todoItem.deleteButton.addEventListener('click', function () {
-                if (confirm("Вы уверены?")) {
-                    todoItem.item.remove();
-                }
-            });
+            clickDoneButton(todoItem);
+            clickDeleteButton(todoItem);
 
             todoList.append(todoItem.item);
             todoItemForm.input.value = '';
         })
     }
 
-    /* document.addEventListener('DOMContentLoaded', function () {
-         createTodoApp(document.getElementById('my-todos'), "Мои дела");
-         createTodoApp(document.getElementById('mom-todos'), "Дела мамы");
-         createTodoApp(document.getElementById('dad-todos'), "Дела папы")
-     })*/
+    function clickDoneButton(button) {
+        button.doneButton.addEventListener('click', function () {
+            button.item.classList.toggle('list-group-item-success');
+        });
+    }
+
+    function clickDeleteButton(button) {
+        button.deleteButton.addEventListener('click', function () {
+            if (confirm("Вы уверены?")) {
+                button.item.remove();
+            }
+        });
+    }
 
     window.createTodoApp = createTodoApp;
 })();
