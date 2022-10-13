@@ -25,8 +25,17 @@
 
         input.addEventListener('input', function(e) {
             e.preventDefault();
-            button.disabled = input.value.length === 0;
+            let isCorrectSymbol = false;
+
+            for (let symbol of input.value)
+                if (symbol !== ' ') {
+                    isCorrectSymbol = true;
+                    break;
+                }
+
+            button.disabled = input.value.length === 0 || !isCorrectSymbol;
         })
+
         return {
             form,
             input,
@@ -67,7 +76,7 @@
         };
     }
 
-    function createTodoApp(container, title = "Список дел", arraysTasks) {
+    function createTodoApp(container, title = "Список дел", arraysTasks = []) {
         let todoAppTitle = createAppTitle(title);
         let todoItemForm = createTodoItemForm();
         let todoList = createTodoList();
@@ -99,6 +108,7 @@
 
             todoList.append(todoItem.item);
             todoItemForm.input.value = '';
+            todoItemForm.button.disabled = true;
         })
     }
 
