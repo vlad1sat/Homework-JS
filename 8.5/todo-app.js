@@ -76,15 +76,15 @@
         container.append(todoList);
 
         for (let task of arraysTasks) {
-            let elementTodo = createTodoItem(task.name);
+            let elementTodoTask = createTodoItem(task.name);
 
             if (task.done)
-                elementTodo.item.classList.toggle('list-group-item-success');
+                elementTodoTask.item.classList.toggle('list-group-item-success');
 
-            clickDoneButton(elementTodo);
-            clickDeleteButton(elementTodo);
+            clickDoneButton(elementTodoTask);
+            clickDeleteButton(elementTodoTask);
 
-            todoList.append(elementTodo.item);
+            todoList.append(elementTodoTask.item);
         }
 
         todoItemForm.form.addEventListener('submit', function (e) {
