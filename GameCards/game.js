@@ -44,30 +44,41 @@
 
     function logicCard(listCard, indexesCard, cards) {
         let countTap = 0;
-        let clickCards = [];
+        let clickCards = {firstClick: null, secondClick: null}
         for (let index = 0; index < 16; index++) {
             let card = createCard();
             listCard.append(card.elementsList);
             card.index = indexesCard[index];
             cards.push(card);
+
             card.clickElement.addEventListener('click', () => {
                 card.imageCard.textContent = String(card.index);
                 card.clickElement.disabled = true;
-                clickCards.push(card);
+
+                if (countTap === 0) clickCards.firstClick = card;
+                else clickCards.secondClick = card;
+
                 countTap++;
+
                 if (countTap === 2) {
                     countTap = 0;
-                    if (clickCards[0].index === clickCards[1].index)
-                        clickCards.length = 0;
-                    else {
-                        clickCards[0].imageCard.textContent = "S";
-                        clickCards[1].imageCard.textContent = "S";
-                        clickCards[0].clickElement.disabled = false;
-                        clickCards[1].clickElement.disabled = false;
-                        clickCards.length = 0;
+                    if (clickCards.firstClick.index !== clickCards.secondClick.index) {
+                        cleanCard(clickCards.firstClick)
+                        cleanCard(clickCards.secondClick);
                     }
+                    cleanClickTap(clickCards);
                 }
             })
+
+            function cleanCard(card) {
+                card.imageCard.textContent = "S";
+                card.clickElement.disabled = false;
+            }
+
+            function cleanClickTap(clickTap) {
+                clickTap.firstClick = null;
+                clickTap.secondClick = null;
+            }
 
         }
 

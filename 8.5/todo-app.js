@@ -102,7 +102,7 @@
             if (!itemForm)
                 return;
 
-            let todoItem = createTodoItem(itemForm);
+            let todoItem = createTodoItem(todoItemForm.input.value);
             clickDoneButton(todoItem);
             clickDeleteButton(todoItem);
 
