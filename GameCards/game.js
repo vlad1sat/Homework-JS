@@ -2,26 +2,27 @@
     function createCard() {
         let elementsList = document.createElement('li');
         let clickElement = document.createElement('button');
-        let imageCard = document.createElement('p');
+        let textButton = document.createElement('p');
         let index = 0;
 
-        imageCard.textContent = "S"
-        clickElement.classList.add('date');
+        textButton.textContent = "?";
+        textButton.classList.add('textCard')
+        clickElement.classList.add('styleCard');
 
         elementsList.append(clickElement);
-        clickElement.append(imageCard);
+        clickElement.append(textButton);
 
         return {
             elementsList,
             clickElement,
-            imageCard,
+            textButton,
             index
         }
     }
 
     function createListCards() {
         let listCards = document.createElement('ul');
-        listCards.classList.add();
+        listCards.id = "menu";
         return listCards;
     }
 
@@ -29,49 +30,69 @@
         let cards = [];
         let restartButton = createRestartButton();
         let nameGame = createMainHeader();
-        let listCard  = createListCards();
         let indexesCard = createIndexCard();
 
         document.body.append(nameGame);
-        logicCard(listCard, indexesCard, cards);
+        logicCard(indexesCard, cards);
 
-        document.body.append(listCard);
-        document.body.append(restartButton);
-        restartButton.addEventListener('click', () => {
+        document.body.append(restartButton.divElement);
+
+        restartButton.button.addEventListener('click', () => {
+            location.reload();
         })
 
     }
+    createGame();
 
-    function logicCard(listCard, indexesCard, cards) {
-        let countTap = 0;
-        let clickCards = {firstClick: null, secondClick: null}
+    function logicCard(indexesCard, cards) {
+        let countClick = 0;
+        let countVictory = 0;
+        let listCard  = createListCards();
+        let countCards = 0;
+        let clickCards = { firstClick: null, secondClick: null }
         for (let index = 0; index < 16; index++) {
             let card = createCard();
             listCard.append(card.elementsList);
+            countCards++;
+            if (countCards % 4 === 0) {
+                document.body.append(listCard);
+                listCard = createListCards();
+            }
+
             card.index = indexesCard[index];
             cards.push(card);
 
             card.clickElement.addEventListener('click', () => {
-                card.imageCard.textContent = String(card.index);
+                card.textButton.textContent = String(card.index);
                 card.clickElement.disabled = true;
 
-                if (countTap === 0) clickCards.firstClick = card;
-                else clickCards.secondClick = card;
+                if (countClick === 0)
+                    clickCards.firstClick = card;
+                else
+                    clickCards.secondClick = card;
 
-                countTap++;
+                countClick++;
 
-                if (countTap === 2) {
-                    countTap = 0;
-                    if (clickCards.firstClick.index !== clickCards.secondClick.index) {
-                        cleanCard(clickCards.firstClick)
-                        cleanCard(clickCards.secondClick);
+                setTimeout(function () {
+                    if (countClick === 2) {
+                        countClick = 0;
+                        if (clickCards.firstClick.index !== clickCards.secondClick.index) {
+                            cleanCard(clickCards.firstClick);
+                            cleanCard(clickCards.secondClick);
+                        }
+                        else
+                            countVictory++;
+                        cleanClickTap(clickCards);
                     }
-                    cleanClickTap(clickCards);
-                }
+
+                    if (countVictory === 8) {
+                        alert("Поздравляем! Вы выиграли!");
+                    }
+                }, 1000)
             })
 
             function cleanCard(card) {
-                card.imageCard.textContent = "S";
+                card.textButton.textContent = "?";
                 card.clickElement.disabled = false;
             }
 
@@ -79,15 +100,18 @@
                 clickTap.firstClick = null;
                 clickTap.secondClick = null;
             }
-
         }
 
-    }
-    createGame();
-    /*function imagesCards() {
-        let images = [];
+        /*function sleep(milliseconds) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < milliseconds);
+        }*/
 
-    }*/
+
+    }
 
     function createIndexCard() {
         let indexes = []
@@ -109,41 +133,19 @@
         }
         return array;
     }
-    /*function addCarInApp() {
-        let cards = [];
-        let list = createListCards();
-        let header = createMainHeader();
-        let restart = createRestartButton();
-        document.body.append(header);
-        for (let cardApp = 0; cardApp < 16; cardApp++) {
-            let card = createCard();
-            list.append(card.elementsList);
-            cards.push(card);
-            card.clickElement.addEventListener('click', () => {
-                card.imageCard.src = "https://free-images.com/or/fd8c/diamonds_queen_deck_playing.jpg";
-                card.clickElement.disabled = true;
-                }
-            )
-        }
-
-        document.body.append(list);
-        document.body.append(restart);
-        restart.addEventListener('click', () => {
-                for (let card of cards) {
-                    card.imageCard.src = "https://avatars.mds.yandex.net/i?id=b909660bd08a052124d88476e593b6d9-5858783-images-thumbs&n=13";
-                    card.clickElement.disabled = false;
-                }
-            }
-        )
-        return cards;
-    }
-    addCarInApp();*/
 
     function createRestartButton() {
+        let divElement = document.createElement('div');
         let button = document.createElement('button');
         button.textContent = "Сыграть ещё раз!";
-        button.classList.add();
-        return button;
+        //button.disabled = true;
+        divElement.classList.add('positionButton');
+        button.classList.add('btn', 'btn-primary', 'restartButton');
+        divElement.append(button);
+        return {
+            divElement,
+            button
+        };
     }
 
     function createMainHeader() {
@@ -152,7 +154,4 @@
         header.classList.add();
         return header;
     }
-
-
-
 })();
