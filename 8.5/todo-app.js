@@ -1,7 +1,7 @@
 (function () {
     function createAppTitle(title) {
         let appTitle = document.createElement('h2');
-        appTitle.innerText = title;
+        appTitle.textContent = title;
         return appTitle;
     }
 
