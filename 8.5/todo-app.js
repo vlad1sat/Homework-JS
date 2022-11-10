@@ -1,4 +1,6 @@
 (function () {
+    let listTasks = [];
+
     function createAppTitle(title) {
         let appTitle = document.createElement('h2');
         appTitle.innerText = title;
@@ -39,7 +41,7 @@
         return {
             form,
             input,
-            button,
+            button
         };
     }
 
@@ -54,6 +56,7 @@
         let buttonGroup = document.createElement('div');
         let doneButton = document.createElement('button');
         let deleteButton = document.createElement('button');
+        let id = Math.round(Math.random() * 1000000) + 1;
 
         item.classList.add('list-group-item', 'd-flex', 'justify-content-between',
             'align-items-center');
@@ -72,57 +75,83 @@
         return {
             item,
             doneButton,
-            deleteButton
+            deleteButton,
+            id
         };
     }
 
-    function createTodoApp(container, title = "Список дел", arraysTasks = []) {
+    function createTodoApp(container, title = "Список дел", keyList) {
         let todoAppTitle = createAppTitle(title);
         let todoItemForm = createTodoItemForm();
         let todoList = createTodoList();
         container.append(todoAppTitle, todoItemForm.form, todoList);
 
-        for (let task of arraysTasks) {
-            let elementTodoTask = createTodoItem(task.name);
+        if (localStorage.getItem(keyList)) {
+            let localTasks = JSON.parse(localStorage.getItem(keyList));
+            for (let task of localTasks) {
+                let elementTodoTask = createTodoItem(task.name);
 
-            if (task.done)
-                elementTodoTask.item.classList.toggle('list-group-item-success');
+                if (task.done)
+                    elementTodoTask.item.classList.toggle('list-group-item-success');
 
-            clickDoneButton(elementTodoTask);
-            clickDeleteButton(elementTodoTask);
+                clickDoneButton(elementTodoTask, task, keyList);
+                clickDeleteButton(elementTodoTask, task, keyList);
 
-            todoList.append(elementTodoTask.item);
+                todoList.append(elementTodoTask.item);
+            }
         }
 
         todoItemForm.form.addEventListener('submit', function (e) {
             e.preventDefault();
             let itemForm = todoItemForm.input.value;
-            if (!itemForm)
-                return;
+            if (!itemForm) return;
 
             let todoItem = createTodoItem(todoItemForm.input.value);
-            clickDoneButton(todoItem);
-            clickDeleteButton(todoItem);
+            let localStorageData = localStorage.getItem(keyList);
 
+            if (localStorageData === null) listTasks = [];
+            else listTasks = JSON.parse(localStorageData);
+
+            let jsonObject = { name: itemForm, idJSON: todoItem.id, done: false }
+            listTasks.push(jsonObject);
+            clickDoneButton(todoItem, jsonObject, keyList);
+            clickDeleteButton(todoItem, jsonObject, keyList);
+
+            localStorage.setItem(keyList, JSON.stringify(listTasks));
             todoList.append(todoItem.item);
             todoItemForm.input.value = '';
             todoItemForm.button.disabled = true;
         })
-    }
 
-    function clickDoneButton(button) {
-        button.doneButton.addEventListener('click', function () {
-            button.item.classList.toggle('list-group-item-success');
-        });
-    }
+        function clickDoneButton(button, doneJSON) {
+            button.doneButton.addEventListener('click',  () => {
+                listTasks = JSON.parse(localStorage.getItem(keyList));
 
-    function clickDeleteButton(button) {
-        button.deleteButton.addEventListener('click', function () {
-            if (confirm("Вы уверены?")) {
-                button.item.remove();
-            }
-        });
+                listTasks.forEach((task) => {
+                    if (task.idJSON === doneJSON.idJSON) {
+                        task.done = !task.done;
+                    }
+                });
+
+                localStorage.setItem(keyList, JSON.stringify(listTasks));
+                button.item.classList.toggle('list-group-item-success');
+            });
+        }
+
+        function clickDeleteButton(element, delJSON) {
+            element.deleteButton.addEventListener('click', () => {
+                if (confirm("Вы уверены?")) {
+                    listTasks = JSON.parse(localStorage.getItem(keyList));
+
+                    const filterTask = listTasks.filter(obj => obj.idJSON !== delJSON.idJSON);
+
+                    localStorage.setItem(keyList, JSON.stringify(filterTask));
+                    element.item.remove();
+                }
+            });
+        }
     }
 
     window.createTodoApp = createTodoApp;
+
 })();
