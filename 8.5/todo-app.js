@@ -1,4 +1,4 @@
-(function () {
+(() => {
     'use strict'
     let listTasks = [];
 
@@ -30,11 +30,12 @@
             e.preventDefault();
             let isCorrectSymbol = false;
 
-            for (let symbol of input.value)
+            for (let symbol of input.value) {
                 if (symbol !== ' ') {
                     isCorrectSymbol = true;
                     break;
                 }
+            }
 
             button.disabled = input.value.length === 0 || !isCorrectSymbol;
         })
@@ -57,7 +58,7 @@
         let buttonGroup = document.createElement('div');
         let doneButton = document.createElement('button');
         let deleteButton = document.createElement('button');
-        let id = Math.round(Math.random() * 10000000) + 1;
+        let itemJSON = { name: name, idJSON: Math.round(Math.random() * 10000000) + 1, done: false };
 
         item.classList.add('list-group-item', 'd-flex', 'justify-content-between',
             'align-items-center');
@@ -77,7 +78,7 @@
             item,
             doneButton,
             deleteButton,
-            id
+            itemJSON
         };
     }
 
@@ -104,19 +105,15 @@
 
         todoItemForm.form.addEventListener('submit', function (e) {
             e.preventDefault();
-            let itemForm = todoItemForm.input.value;
-            if (!itemForm) return;
-
             let todoItem = createTodoItem(todoItemForm.input.value);
             let localStorageData = window.localStorage.getItem(keyList);
 
             if (localStorageData === null) listTasks = [];
             else listTasks = JSON.parse(localStorageData);
 
-            let jsonObject = { name: itemForm, idJSON: todoItem.id, done: false };
-            listTasks.push(jsonObject);
-            clickDoneButton(todoItem, jsonObject, keyList);
-            clickDeleteButton(todoItem, jsonObject, keyList);
+            listTasks.push(todoItem.itemJSON);
+            clickDoneButton(todoItem, todoItem.itemJSON);
+            clickDeleteButton(todoItem, todoItem.itemJSON);
 
             window.localStorage.setItem(keyList, JSON.stringify(listTasks));
             todoList.append(todoItem.item);
@@ -144,7 +141,7 @@
                 if (confirm("Вы уверены?")) {
                     listTasks = JSON.parse(window.localStorage.getItem(keyList));
 
-                    const filterTask = listTasks.filter(obj => obj.idJSON !== delJSON.idJSON);
+                    const filterTask = listTasks.filter(task => task.idJSON !== delJSON.idJSON);
 
                     window.localStorage.setItem(keyList, JSON.stringify(filterTask));
                     element.item.remove();
