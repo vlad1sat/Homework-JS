@@ -80,9 +80,7 @@
         let todoAppTitle = createAppTitle(title);
         let todoItemForm = createTodoItemForm();
         let todoList = createTodoList();
-        container.append(todoAppTitle);
-        container.append(todoItemForm.form);
-        container.append(todoList);
+        container.append(todoAppTitle, todoItemForm.form, todoList);
 
         for (let task of arraysTasks) {
             let elementTodoTask = createTodoItem(task.name);
