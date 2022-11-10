@@ -1,9 +1,10 @@
 (function () {
+    'use strict'
     let listTasks = [];
 
     function createAppTitle(title) {
         let appTitle = document.createElement('h2');
-        appTitle.innerText = title;
+        appTitle.textContent = title;
         return appTitle;
     }
 
@@ -56,7 +57,7 @@
         let buttonGroup = document.createElement('div');
         let doneButton = document.createElement('button');
         let deleteButton = document.createElement('button');
-        let id = Math.round(Math.random() * 1000000) + 1;
+        let id = Math.round(Math.random() * 10000000) + 1;
 
         item.classList.add('list-group-item', 'd-flex', 'justify-content-between',
             'align-items-center');
@@ -86,8 +87,8 @@
         let todoList = createTodoList();
         container.append(todoAppTitle, todoItemForm.form, todoList);
 
-        if (localStorage.getItem(keyList)) {
-            let localTasks = JSON.parse(localStorage.getItem(keyList));
+        if (window.localStorage.getItem(keyList)) {
+            let localTasks = JSON.parse(window.localStorage.getItem(keyList));
             for (let task of localTasks) {
                 let elementTodoTask = createTodoItem(task.name);
 
@@ -107,17 +108,17 @@
             if (!itemForm) return;
 
             let todoItem = createTodoItem(todoItemForm.input.value);
-            let localStorageData = localStorage.getItem(keyList);
+            let localStorageData = window.localStorage.getItem(keyList);
 
             if (localStorageData === null) listTasks = [];
             else listTasks = JSON.parse(localStorageData);
 
-            let jsonObject = { name: itemForm, idJSON: todoItem.id, done: false }
+            let jsonObject = { name: itemForm, idJSON: todoItem.id, done: false };
             listTasks.push(jsonObject);
             clickDoneButton(todoItem, jsonObject, keyList);
             clickDeleteButton(todoItem, jsonObject, keyList);
 
-            localStorage.setItem(keyList, JSON.stringify(listTasks));
+            window.localStorage.setItem(keyList, JSON.stringify(listTasks));
             todoList.append(todoItem.item);
             todoItemForm.input.value = '';
             todoItemForm.button.disabled = true;
@@ -125,7 +126,7 @@
 
         function clickDoneButton(button, doneJSON) {
             button.doneButton.addEventListener('click',  () => {
-                listTasks = JSON.parse(localStorage.getItem(keyList));
+                listTasks = JSON.parse(window.localStorage.getItem(keyList));
 
                 listTasks.forEach((task) => {
                     if (task.idJSON === doneJSON.idJSON) {
@@ -133,7 +134,7 @@
                     }
                 });
 
-                localStorage.setItem(keyList, JSON.stringify(listTasks));
+                window.localStorage.setItem(keyList, JSON.stringify(listTasks));
                 button.item.classList.toggle('list-group-item-success');
             });
         }
@@ -141,11 +142,11 @@
         function clickDeleteButton(element, delJSON) {
             element.deleteButton.addEventListener('click', () => {
                 if (confirm("Вы уверены?")) {
-                    listTasks = JSON.parse(localStorage.getItem(keyList));
+                    listTasks = JSON.parse(window.localStorage.getItem(keyList));
 
                     const filterTask = listTasks.filter(obj => obj.idJSON !== delJSON.idJSON);
 
-                    localStorage.setItem(keyList, JSON.stringify(filterTask));
+                    window.localStorage.setItem(keyList, JSON.stringify(filterTask));
                     element.item.remove();
                 }
             });
