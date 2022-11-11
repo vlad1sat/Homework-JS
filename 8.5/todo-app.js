@@ -1,6 +1,5 @@
 (() => {
-    'use strict'
-    let listTasks = [];
+    'use strict';
 
     function createAppTitle(title) {
         let appTitle = document.createElement('h2');
@@ -26,7 +25,7 @@
         form.append(input);
         form.append(buttonWrapper);
 
-        input.addEventListener('input', function(e) {
+        input.addEventListener('input', (e) => {
             e.preventDefault();
             let isCorrectSymbol = false;
 
@@ -86,15 +85,15 @@
         let todoAppTitle = createAppTitle(title);
         let todoItemForm = createTodoItemForm();
         let todoList = createTodoList();
+        let listTasks = [];
         container.append(todoAppTitle, todoItemForm.form, todoList);
 
         if (window.localStorage.getItem(keyList)) {
             let localTasks = JSON.parse(window.localStorage.getItem(keyList));
-            for (let task of localTasks) {
+            for (const task of localTasks) {
                 let elementTodoTask = createTodoItem(task.name);
 
-                if (task.done)
-                    elementTodoTask.item.classList.toggle('list-group-item-success');
+                if (task.done) elementTodoTask.item.classList.toggle('list-group-item-success');
 
                 clickDoneButton(elementTodoTask, task, keyList);
                 clickDeleteButton(elementTodoTask, task, keyList);
@@ -103,7 +102,7 @@
             }
         }
 
-        todoItemForm.form.addEventListener('submit', function (e) {
+        todoItemForm.form.addEventListener('submit',  (e) => {
             e.preventDefault();
             let todoItem = createTodoItem(todoItemForm.input.value);
             let localStorageData = window.localStorage.getItem(keyList);
